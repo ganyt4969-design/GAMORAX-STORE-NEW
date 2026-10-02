@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GamoraX Royal Dream</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#090909,#30000f);color:#fff}.wrap{width:92%;max-width:520px;margin:auto}.header{text-align:center;padding:34px 10px 18px}.logo{font-size:38px;font-weight:900}.logo span{color:#ff1744}.sub{color:#bbb}.card{margin:16px 0;padding:24px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 30px #0006}.hidden{display:none}h2{margin-top:0}label{display:block;margin:15px 0 7px;font-weight:bold}input,select{width:100%;padding:14px;border:0;border-radius:12px;font-size:16px}button{width:100%;padding:15px;margin-top:18px;border:0;border-radius:12px;background:#ff1744;color:#fff;font-size:17px;font-weight:700;cursor:pointer}.back{background:#444}.price{margin-top:14px;color:#ff617d;font-size:21px;font-weight:700}.info{padding:13px;border-radius:12px;background:#fff3cd;color:#5f4800;line-height:1.5;font-size:14px}.qris{display:block;width:100%;max-width:440px;margin:18px auto;background:#fff;padding:7px;border-radius:12px}.detail{line-height:1.8;color:#ddd}.success{padding:16px;border-radius:12px;background:#123c25;color:#bff5d0}footer{text-align:center;color:#888;padding:25px 10px;font-size:13px}
+</style>
+</head>
+<body>
+<header class="header"><div class="logo">Gamora<span>X</span></div><div class="sub">Royal Dream • Top Up Cepat & Mudah</div></header>
+<main class="wrap">
+<section id="home" class="card">
+<h2>🎮 Top Up Royal Dream</h2>
+<p>Pilih nominal, masukkan data akun, lalu bayar menggunakan QRIS GamoraX.</p>
+<button onclick="show('order')">ORDER SEKARANG</button>
+</section>
+<section id="order" class="card hidden">
+<h2>🛒 Data Pesanan</h2>
+<label>Nama</label><input id="nama" type="text" placeholder="Masukkan nama">
+<label>ID Akun</label><input id="idAkun" type="text" placeholder="Masukkan ID Akun Royal Dream">
+<label>Pilih Nominal</label>
+<select id="nominal" onchange="harga()">
+<option value="">-- Pilih Nominal --</option>
+<option value="100000|Paket 2B Rp100.000">Paket Rp100.000</option>
+<option value="200000|Paket 4B Rp200.000">Paket Rp200.000</option>
+<option value="300000|Paket 6B Rp300.000">Paket Rp300.000</option>
+<option value="500000|Paket 10B Rp500.000">Paket Rp500.000</option>
+</select>
+<div id="total" class="price"></div>
+<button onclick="toPayment()">BAYAR SEKARANG</button>
+<button class="back" onclick="show('home')">KEMBALI</button>
+</section>
+<section id="payment" class="card hidden">
+<h2>💳 Pembayaran QRIS</h2>
+<div id="detail" class="detail"></div><br>
+<div class="info">Scan QRIS di bawah menggunakan aplikasi pembayaran yang mendukung QRIS. Pastikan jumlah pembayaran sesuai dengan total pesanan.</div>
+<img src="qris-gamorax.jpeg" class="qris" alt="QRIS GamoraX Royal Dream">
+<p style="text-align:center;line-height:1.7"><b>GamoraX Royal Dream</b><br>NMID: <b>ID1026607369182</b></p>
+<button onclick="finish()">SUDAH BAYAR</button>
+<button class="back" onclick="show('order')">KEMBALI</button>
+</section>
+<section id="done" class="card hidden">
+<div class="success"><h2>✅ Pesanan Tercatat</h2><p>Data pesanan telah dicatat di halaman ini. Pembayaran tetap perlu diverifikasi oleh pengelola.</p></div>
+<div id="final" class="detail" style="margin-top:16px"></div>
+<button onclick="location.reload()">SELESAI</button>
+</section>
+</main>
+<footer>© 2026 GamoraX Royal Dream</footer>
+<script>
+function show(id){['home','order','payment','done'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0)}
+function harga(){let v=document.getElementById('nominal').value;document.getElementById('total').textContent=v?'Total: Rp '+Number(v.split('|')[0]).toLocaleString('id-ID'):''}
+function safe(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function toPayment(){let n=document.getElementById('nama').value.trim(),i=document.getElementById('idAkun').value.trim(),v=document.getElementById('nominal').value;if(!n||!i||!v){alert('Lengkapi Nama, ID Akun, dan Nominal terlebih dahulu.');return}let [amount,paket]=v.split('|');document.getElementById('detail').innerHTML='<b>Nama:</b> '+safe(n)+'<br><b>ID Akun:</b> '+safe(i)+'<br><b>Paket:</b> '+safe(paket)+'<br><b>Total:</b> Rp '+Number(amount).toLocaleString('id-ID');show('payment')}
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbzPAxTrq7K6axYLPayfiKm_cEUOkSikR-6wrXWj5DgxEHCVDrK64PREo51nQYUM2fRjYA/exec';
+
+async function finish(){
+  let n=document.getElementById('nama').value.trim();
+  let i=document.getElementById('idAkun').value.trim();
+  let v=document.getElementById('nominal').value;
+
+  if(!n||!i||!v){
+    alert('Lengkapi Nama, ID Akun, dan Nominal terlebih dahulu.');
+    return;
+  }
+
+  let [amount,paket]=v.split('|');
+  let payload={nama:n,idAkun:i,paket:paket,harga:amount};
+
+  const button=document.querySelector('#payment button:not(.back)');
+  button.disabled=true;
+  button.textContent='MENGIRIM PESANAN...';
+
+  try{
+    await fetch(WEB_APP_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+
+    document.getElementById('final').innerHTML=
+      '<br><b>Nama:</b> '+safe(n)+
+      '<br><b>ID Akun:</b> '+safe(i)+
+      '<br><b>Paket:</b> '+safe(paket)+
+      '<br><b>Total:</b> Rp '+Number(amount).toLocaleString('id-ID')+
+      '<br><br><b>Status:</b> Pesanan telah dikirim untuk dicatat.';
+
+    show('done');
+  }catch(error){
+    alert('Pesanan gagal dikirim. Periksa koneksi internet lalu coba lagi.');
+    console.error(error);
+  }finally{
+    button.disabled=false;
+    button.textContent='SUDAH BAYAR';
+  }
+}
+</script>
+</body>
+</html>
